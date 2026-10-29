@@ -1,0 +1,8 @@
+#!/bin/sh
+# runswmm - run the Java port with room to grow. The JVM's default heap is a quarter of the machine's memory, and
+# one corpus model (Hydrology/sewer_rdii_problem.inp) allocates 3.38 GB of RDII rainfall-history arrays, as EPA
+# itself does (gate/rdii_memory.py; EPA's peak resident size: 3.11 GB). Observed here: the default G1 collector ran
+# out of heap even at 75% of memory; the parallel collector at 75% runs it (4.92 GB peak) and gives EPA's
+# output.
+#   java/runswmm <input file> <report file> [output file]
+exec java -XX:+UseParallelGC -XX:MaxRAMPercentage=75 -jar "$(dirname "$0")/swmm5.jar" "$@"
